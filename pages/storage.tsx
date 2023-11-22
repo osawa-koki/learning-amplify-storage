@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Storage (): React.JSX.Element {
+export default function StoragePage (): React.JSX.Element {
   return (
     <>
     </>
