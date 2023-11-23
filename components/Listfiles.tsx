@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { type ListPaginateInput, list, getUrl } from 'aws-amplify/storage'
+import { type ListPaginateInput, list, getUrl, remove } from 'aws-amplify/storage'
 import { Table } from 'react-bootstrap'
 
 import { IoReloadSharp } from 'react-icons/io5'
 import { FaDownload } from 'react-icons/fa6'
+import { FaTrash } from 'react-icons/fa'
 
 import { toast } from 'react-toastify'
 
@@ -55,6 +56,7 @@ export default function ListfilesComponent (): React.JSX.Element {
             <th>size</th>
             <th>lastModified</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -80,6 +82,26 @@ export default function ListfilesComponent (): React.JSX.Element {
                     a.click()
                     a.remove()
                   }} role='button' />
+                </td>
+                <td>
+                  {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                  <FaTrash onClick={async () => {
+                    if (!window.confirm('Are you sure you want to delete this file?')) return
+                    try {
+                      await remove({
+                        key: file.key,
+                        options: {
+                          accessLevel: 'private'
+                        }
+                      })
+                      toast.success('File deleted.')
+                    } catch (error) {
+                      console.error(error)
+                      toast.error('Failed to delete file.')
+                    } finally {
+                      await load()
+                    }
+                  }} role='button' className='text-danger' />
                 </td>
               </tr>
             )
