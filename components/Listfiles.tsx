@@ -86,6 +86,7 @@ export default function ListfilesComponent (): React.JSX.Element {
                 <td>
                   {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                   <FaTrash onClick={async () => {
+                    if (!window.confirm('Are you sure you want to delete this file?')) return
                     try {
                       await remove({
                         key: file.key,
