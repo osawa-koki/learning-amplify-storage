@@ -19,6 +19,9 @@ import { withAuthenticator } from '@aws-amplify/ui-react'
 import awsconfig from '../src/aws-exports'
 import { Alert } from 'react-bootstrap'
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 Amplify.configure(awsconfig)
 
 export function App ({ user, signOut, Component }: WithAuthenticatorProps & { pageProps: any, Component: NextComponentType<NextPageContext, any, any> }): React.JSX.Element {
@@ -55,6 +58,7 @@ export default function MyApp ({ Component, pageProps, router }: AppProps): Reac
       </Head>
       <Layout>
         {withAuthenticator(App)({ Component, pageProps })}
+        <ToastContainer />
       </Layout>
     </>
   )

@@ -1,9 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 
+import { toast } from 'react-toastify'
+
 import { type UploadDataInput, uploadData } from 'aws-amplify/storage'
 
 export default function UploadFileComponent (): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const [fileName, setFileName] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
 
@@ -11,7 +15,7 @@ export default function UploadFileComponent (): React.JSX.Element {
     return fileName == null || file == null
   }, [fileName, file])
 
-  const uploadFile = (): void => {
+  const uploadFile = async (): Promise<void> => {
     if (file == null) return
     if (fileName == null) return
     const uploadDataInput: UploadDataInput = {
@@ -21,7 +25,16 @@ export default function UploadFileComponent (): React.JSX.Element {
         accessLevel: 'private'
       }
     }
-    uploadData(uploadDataInput)
+    try {
+      setIsLoading(true)
+      const uploadDataOutput = uploadData(uploadDataInput)
+      await uploadDataOutput.result
+      toast.success('Upload success.')
+    } catch (error) {
+      toast.error('Upload failed.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -45,7 +58,8 @@ export default function UploadFileComponent (): React.JSX.Element {
           setFileName(file.name)
         }} />
       </Form.Group>
-      <Button variant="primary" onClick={uploadFile} className='mt-3' disabled={buttonIsDisabled}>Upload</Button>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <Button variant="primary" onClick={uploadFile} className='mt-3' disabled={buttonIsDisabled || isLoading}>Upload</Button>
     </>
   )
 }
