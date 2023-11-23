@@ -1,34 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import { type ListPaginateInput, list } from 'aws-amplify/storage'
 import { Table } from 'react-bootstrap'
+import { IoReloadSharp } from 'react-icons/io5'
+
+import { toast } from 'react-toastify'
+
 import dayjs from 'dayjs'
 
 export default function ListfilesComponent (): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const [files, setFiles] = useState<StorageItem[]>([])
 
-  const load = (): void => {
+  const load = async (): Promise<void> => {
     const listPaginateInput: ListPaginateInput = {
       prefix: '',
       options: {
         accessLevel: 'private'
       }
     }
-    list(listPaginateInput)
-      .then((listResult) => {
-        const items = listResult.items
-        setFiles(items)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+    try {
+      const listResult = await list(listPaginateInput)
+      const items = listResult.items
+      setFiles(items)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
     load()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Failed to load files.')
+      })
   }, [])
 
   return (
     <>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <IoReloadSharp onClick={async () => {
+        setIsLoading(true)
+        await load()
+        setIsLoading(false)
+      }} className={`${isLoading ? 'bg-secondary' : ''} border my-1`} role='button' />
       <Table>
         <thead>
           <tr>
