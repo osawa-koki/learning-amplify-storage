@@ -17,6 +17,12 @@
           "appId": "d3qtgktx6nyf1v",
           "type": "manual"
         }
+      },
+      "auth": {
+        "learningamplifystora6b007aef": {}
+      },
+      "storage": {
+        "s348735033": {}
       }
     }
   }
