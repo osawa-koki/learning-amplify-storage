@@ -2,6 +2,8 @@
 
 🥦🥦🥦 Amplifyでストレージを使用してみる！  
 
+![成果物](./docs/images/fruit.gif)  
+
 <https://docs.amplify.aws/javascript/build-a-backend/storage/>  
 
 ## 準備方法
