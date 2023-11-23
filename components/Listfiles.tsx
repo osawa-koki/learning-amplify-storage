@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { type ListPaginateInput, list } from 'aws-amplify/storage'
+import { type ListPaginateInput, list, getUrl } from 'aws-amplify/storage'
 import { Table } from 'react-bootstrap'
+
 import { IoReloadSharp } from 'react-icons/io5'
+import { FaDownload } from 'react-icons/fa6'
 
 import { toast } from 'react-toastify'
 
@@ -52,6 +54,7 @@ export default function ListfilesComponent (): React.JSX.Element {
             <th>name</th>
             <th>size</th>
             <th>lastModified</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -61,6 +64,23 @@ export default function ListfilesComponent (): React.JSX.Element {
                 <td>{file.key}</td>
                 <td>{file.size}</td>
                 <td>{file.lastModified != null ? dayjs(file.lastModified).format('YYYY-MM-DD HH:mm:ss') : 'undefined'}</td>
+                <td>
+                  {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                  <FaDownload onClick={async () => {
+                    const getUrlResult = await getUrl({
+                      key: file.key,
+                      options: {
+                        accessLevel: 'private'
+                      }
+                    })
+                    const url = getUrlResult.url.href
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = file.key
+                    a.click()
+                    a.remove()
+                  }} role='button' />
+                </td>
               </tr>
             )
           })}
